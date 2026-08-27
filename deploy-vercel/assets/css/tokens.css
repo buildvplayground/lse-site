@@ -1,0 +1,64 @@
+/* ============================================================
+   LSE — Engenharia Construtiva · Design tokens
+   Paleta AMOSTRADA DOS LOGOS REAIS do cliente (navy + dourado).
+   Não é o "dourado/serifada default" — é a identidade da marca.
+   Todos os pares de texto verificados ≥ 4.5:1 (WCAG AA).
+   ============================================================ */
+:root{
+  /* — Marca — */
+  --navy:        #0E2748;  /* amostrado: #082840 / #102840 */
+  --navy-deep:   #08192E;  /* rodapé, bloco mais profundo   */
+  --navy-soft:   #16355C;  /* cartões sobre navy            */
+  --navy-line:   #23446E;  /* divisórias sobre escuro       */
+
+  --gold:        #C08A2A;  /* amostrado: #B08020 / #C89830  */
+  --gold-lt:     #D9A94B;  /* acento sobre escuro (6.9:1)   */
+  --gold-dk:     #8A6410;  /* acento sobre claro  (4.8:1)   */
+
+  /* — Neutros — */
+  --bone:        #F5F2EC;  /* fundo claro da casa           */
+  --bone-2:      #EBE6DC;  /* faixa clara alternativa       */
+  --white:       #FFFFFF;
+  --ink:         #16283F;  /* corpo sobre claro   (13.3:1)  */
+  --ink-muted:   #4E627A;  /* apoio sobre claro   (5.6:1)   */
+  --ink-line:    #D8D2C6;
+  --on-dark:     #FFFFFF;  /* corpo sobre navy    (15:1)    */
+  --on-dark-mut: #B7C6D8;  /* apoio sobre navy    (8.6:1)   */
+
+  /* — Tipografia —
+     Display serifada: ecoa o letreiro "LSE" do logo (serifas com bracket).
+     Corpo sans: legibilidade técnica. Par serifada+sans = contraste editorial. */
+  --font-display: "Source Serif 4", "Source Serif Pro", Georgia, "Times New Roman", serif;
+  --font-body:    "Inter", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+
+  --fs-hero:  clamp(2.35rem, 1.35rem + 4.2vw, 4.6rem);
+  --fs-h2:    clamp(1.85rem, 1.25rem + 2.3vw, 3rem);
+  --fs-h3:    clamp(1.15rem, 1.02rem + .55vw, 1.45rem);
+  --fs-lede:  clamp(1.03rem, .97rem + .35vw, 1.2rem);
+  --fs-body:  1rem;
+  --fs-small: .875rem;
+  --fs-micro: .75rem;
+
+  /* — Ritmo — */
+  --sp-1:.25rem; --sp-2:.5rem;  --sp-3:.75rem; --sp-4:1rem;
+  --sp-5:1.5rem; --sp-6:2rem;   --sp-7:3rem;   --sp-8:4rem;
+  --sp-9:5.5rem; --sp-10:7rem;
+  --section-y: clamp(3.75rem, 2.2rem + 6vw, 7rem);
+  --container: 1200px;
+  --gutter: clamp(1.25rem, .6rem + 2vw, 1.75rem);
+
+  /* — Forma — raio VARIÁVEL por hierarquia (anti-padrão 2.10: raio idêntico em tudo) —
+     utilitário = reto · card = 2px · destaque/mídia = 4px · pílula só em chips */
+  --r-flat: 0;
+  --r-card: 2px;
+  --r-media: 4px;
+  --r-pill: 999px;
+
+  /* — Movimento — sem bounce (sistema-de-movimento §0) — */
+  --e:   cubic-bezier(.16,.84,.28,1);
+  --e-ui:cubic-bezier(.4,0,.2,1);
+
+  /* — Elevação: usada com parcimônia, só onde há sobreposição real — */
+  --sh-raise: 0 1px 2px rgba(8,25,46,.06), 0 8px 24px rgba(8,25,46,.08);
+  --sh-over:  0 18px 60px rgba(8,25,46,.28);
+}
