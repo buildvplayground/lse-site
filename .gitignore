@@ -1,0 +1,33 @@
+# ── BuildV: o repositório versiona SÓ a pasta de deploy + estado ──
+# Material-fonte fica local + Google Drive, nunca no git.
+_raw/
+imagens/
+site antigo/
+Marca/
+Copys/
+Site/
+design-system/
+brief-pack.md
+_painel/
+
+# Segredos — NUNCA versionar
+db-config.php
+*.env
+.env*
+!*.env.example
+!db-config.example.php
+secrets*.json
+*.pem
+*.key
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.log
+node_modules/
+.vercel/
+__pycache__/
+*.pyc

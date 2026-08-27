@@ -1,0 +1,27 @@
+{
+  "slug": "lse",
+  "cliente": "LSE - Engenharia Construtiva",
+  "segmento": "Engenharia diagnostica e recuperacao predial (patologias da construcao civil)",
+  "atualizado_em": "2026-08-27",
+  "etapa_atual": 2,
+  "hospedagem": "nao-informada (preparado para Vercel - estatico)",
+  "etapas": [
+    {"n": 1, "nome": "Extrair do Drive", "status": "done"},
+    {"n": 2, "nome": "Organizar pastas / scaffold", "status": "doing"},
+    {"n": "2b", "nome": "Criar repositorio GitHub", "status": "pending"},
+    {"n": 3, "nome": "Design system", "status": "pending"},
+    {"n": 4, "nome": "Extrair copy", "status": "pending"},
+    {"n": 5, "nome": "Front-end", "status": "pending"},
+    {"n": 6, "nome": "Ajustes finais (imagens + responsividade)", "status": "pending"},
+    {"n": 7, "nome": "Tags e modulos LGPD", "status": "pending"},
+    {"n": 8, "nome": "Revisao humana", "status": "pending"},
+    {"n": 9, "nome": "Deploy", "status": "pending"}
+  ],
+  "pendencias": [],
+  "links": {
+    "drive": "https://drive.google.com/drive/folders/1vzOSoinkDoyGULqTRVgn1LSyrs4Kb-WK",
+    "repo": null,
+    "preview": null,
+    "dominio": null
+  }
+}
