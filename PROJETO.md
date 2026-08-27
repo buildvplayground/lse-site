@@ -35,15 +35,52 @@
   `03.02. Revisões e Criações` estão **vazias** no Drive.
 - ❌ **Brandbook / manual de marca** — paleta e tipografia derivadas dos **logos reais**.
 
+## Decisão do cliente (27/08/2026) — imagens
+
+O cliente pediu, durante a etapa 5, para **não usar as fotos do Drive** e sim **banco de
+imagens** com contexto do serviço descrito na proposta comercial. Adotado (fonte: Pexels,
+licença comercial livre). Consequências assumidas, para o site não afirmar o que não pode
+comprovar:
+
+- Nenhuma foto de banco é legendada com o nome de uma obra real da LSE.
+- O portfólio virou grade de **frentes de atuação**; as obras (Cosmopolitan, Ravi, Brighton
+  House, Dr. Goulin, Trianon) viraram **lista de referências em texto**, com escopo e local.
+- A seção de **antes/depois** foi removida — com foto de banco seria resultado fabricado.
+- As 19 fotos reais seguem arquivadas em `imagens/originais/` e no Drive.
+
 ## Etapas
 
 - [x] **1. Extrair do Drive** — 28 arquivos via rclone
-- [ ] **2. Organizar pastas / scaffold**
-- [ ] **2b. Repositório GitHub**
-- [ ] **3. Design system**
-- [ ] **4. Copy estruturada**
-- [ ] **5. Front-end**
-- [ ] **6. Ajustes finais (webp + responsividade)**
-- [ ] **7. Tags e módulos LGPD**
-- [ ] **8. Revisão humana** 🛑
+- [x] **2. Organizar pastas / scaffold**
+- [x] **2b. Repositório GitHub** — `dev-buildv/lse-site` (privado)
+- [x] **3. Design system** — navy + dourado amostrados dos logos reais
+- [x] **4. Copy estruturada** — provisória, 100% da Proposta Comercial
+- [x] **5. Front-end** — `revisar-frontend`: **LIBERAR**, 0 bloqueantes em aberto
+- [x] **6. Ajustes finais** — `.webp`, 0 overflow de 320→1920px, 0 falha de contraste AA
+- [x] **7. Tags e módulos LGPD** — GTM-M2LBB4QV + cookies + privacidade + fornecedores
+- [ ] **8. Revisão humana** 🛑 ← *aqui*
 - [ ] **9. Deploy** 🛑
+
+## Estrutura do site
+
+| Seção | Tipo | Fundo |
+|---|---|---|
+| Hero | foto full-bleed + coluna à esquerda | navy escuro |
+| Credenciais | faixa de 4 colunas, contador em "16 anos" | navy |
+| Posicionamento | split texto + foto | bone |
+| Citação de valor | faixa de imagem full-bleed com parallax | navy escuro |
+| Frentes de atuação | grade 3/2/1 + lightbox de galeria | navy |
+| Por que a LSE | tabela comparativa → cartões rotulados em ≤560px | bone |
+| — | faixa de imagem (respiro) | — |
+| Obras de referência | lista editorial com divisórias | branco |
+| Responsável técnico | split invertido foto + formação | bone |
+| Incluso em toda proposta | faixa de 5 itens com divisórias | navy |
+| Como solicitar | 3 passos animados + botão WhatsApp + ficha da empresa | branco |
+| Rodapé | 3 colunas | navy escuro |
+
+**Páginas:** `index.html` · `privacidade.html` · `fornecedores.html`
+
+## Pendências
+
+Ver `state.json` → `pendencias` (9 itens). As de maior impacto: **número real de WhatsApp**,
+**domínio** e **importar o repositório no Vercel**.
