@@ -127,3 +127,16 @@ Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
 
 > Aviso conhecido e aceito: o auditor estático lista `lb-close` como "classe sem regra
 > CSS" — é modificador de `.lb-btn` usado como gancho de JS, não precisa de regra.
+
+### Ajuste — CTA da navbar (2026-08-28)
+- **A seta do CTA caía para baixo do texto.** Causa: `.nav-menu a` (especificidade
+  0,1,1) vencia `.btn` (0,1,0) e impunha `display:block` + padding próprio. A regra
+  de link da nav agora é `:not(.btn)` — como a versão mobile já era. O sublinhado
+  animado (`::after`) também deixou de ser desenhado dentro do botão.
+- CTA da barra ganhou variante compacta (44px de altura, contra 55px do hero) —
+  proporção de navbar, mantendo o alvo de toque confortável.
+- **Achado no caminho:** no drawer mobile a logo do header aparecia POR CIMA do
+  painel. O `.nav-drawer` é filho do header, e o `z-index:90` do header cria um
+  contexto de empilhamento: dentro dele, `.brand` (96) ficava acima do painel (95).
+  `.brand` foi para 94. O botão continua acima (é o "fechar") e agora inverte as
+  cores sobre o painel navy.
