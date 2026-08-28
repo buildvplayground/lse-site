@@ -43,6 +43,18 @@
   --sp-1:.25rem; --sp-2:.5rem;  --sp-3:.75rem; --sp-4:1rem;
   --sp-5:1.5rem; --sp-6:2rem;   --sp-7:3rem;   --sp-8:4rem;
   --sp-9:5.5rem; --sp-10:7rem;
+  /* passos intermediários — a escala anterior pulava demais entre .5 e 1.5rem
+     e o CSS acabou inventando 36 valores avulsos. Tudo agora cai na grade de 4px. */
+  --sp-05:.125rem; --sp-15:.375rem; --sp-25:.625rem; --sp-35:.875rem;
+  --sp-45:1.25rem; --sp-55:1.75rem; --sp-65:2.5rem; --sp-75:3.5rem;
+
+  /* — Espaçamento por PAPEL (evita 6 paddings diferentes para "card") — */
+  --pad-card:  clamp(1.25rem, 1rem + 1vw, 1.75rem);  /* caixa de conteúdo   */
+  --pad-cell:  1.75rem 1.5rem;                        /* célula de faixa     */
+  --row-y:     1rem;                                  /* linha de lista      */
+  --row-y-lg:  1.5rem;                                /* linha editorial     */
+  --indent:    1.125rem;                              /* recuo de marcador   */
+  --head-gap:  var(--sp-7);                           /* cabeçalho→conteúdo  */
   --section-y: clamp(3.75rem, 2.2rem + 6vw, 7rem);
   --container: 1200px;
   --gutter: clamp(1.25rem, .6rem + 2vw, 1.75rem);

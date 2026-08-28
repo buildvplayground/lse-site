@@ -2,54 +2,140 @@
   "slug": "lse",
   "cliente": "LSE - Engenharia Construtiva",
   "segmento": "Engenharia diagnostica e recuperacao predial (patologias da construcao civil)",
-  "atualizado_em": "2026-08-27",
+  "atualizado_em": "2026-08-28",
   "etapa_atual": 8,
   "hospedagem": "nao informada - preparado para Vercel (HTML estatico, Root Directory = deploy-vercel)",
   "etapas": [
-    {"n": 1,    "nome": "Extrair do Drive",                        "status": "done",
-     "nota": "28 arquivos via rclone. Copy oficial NAO existe (planilha de Aprofundamento em branco) e as pastas de site antigo estao vazias."},
-    {"n": 2,    "nome": "Organizar pastas / scaffold",             "status": "done"},
-    {"n": "2b", "nome": "Criar repositorio GitHub",                "status": "done",
-     "nota": "dev-buildv/lse-site, privado. Versiona so deploy-vercel/ + estado."},
-    {"n": 3,    "nome": "Design system",                           "status": "done",
-     "nota": "Navy #0E2748 + dourado #C08A2A amostrados por contagem de pixels dos logos reais. Source Serif 4 + Inter, self-hosted."},
-    {"n": 4,    "nome": "Extrair copy",                            "status": "done",
-     "nota": "COPY PROVISORIA derivada 100% da Proposta Comercial LSE2026024. Nenhum fato inventado."},
-    {"n": 5,    "nome": "Front-end",                               "status": "done",
-     "nota": "HTML+CSS+JS vanilla. revisar-frontend: veredito LIBERAR, 0 achados bloqueantes em aberto (6 corrigidos)."},
-    {"n": 6,    "nome": "Ajustes finais (imagens + responsividade)","status": "done",
-     "nota": "Todas as imagens em .webp. Aceite atingido: 0 de overflow horizontal de 320px a 1920px e 0 violacao de contraste WCAG AA, ambos medidos em navegador real."},
-    {"n": 7,    "nome": "Tags e modulos LGPD",                     "status": "done",
-     "nota": "GTM-M2LBB4QV instalado (head + noscript) nas 3 paginas. Banner de cookies com consentimento no dataLayer, Politica de Privacidade e Fornecedores/Trabalhe Conosco. Merlin nao instalado (ID nao fornecido). Backend PHP nao se aplica: o site e estatico e nao tem formulario."},
-    {"n": 8,    "nome": "Revisao humana",                          "status": "doing",
-     "nota": "Aguardando o olhar do usuario no preview local."},
-    {"n": 9,    "nome": "Deploy",                                  "status": "blocked",
-     "nota": "Bloqueado por dependencia do usuario: dominio e importacao do repo no Vercel."}
+    {
+      "n": 1,
+      "nome": "Extrair do Drive",
+      "status": "done",
+      "nota": "28 arquivos via rclone. Copy oficial NAO existe (planilha de Aprofundamento em branco) e as pastas de site antigo estao vazias."
+    },
+    {
+      "n": 2,
+      "nome": "Organizar pastas / scaffold",
+      "status": "done"
+    },
+    {
+      "n": "2b",
+      "nome": "Criar repositorio GitHub",
+      "status": "done",
+      "nota": "dev-buildv/lse-site, privado. Versiona so deploy-vercel/ + estado."
+    },
+    {
+      "n": 3,
+      "nome": "Design system",
+      "status": "done",
+      "nota": "Navy #0E2748 + dourado #C08A2A amostrados por contagem de pixels dos logos reais. Source Serif 4 + Inter, self-hosted."
+    },
+    {
+      "n": 4,
+      "nome": "Extrair copy",
+      "status": "done",
+      "nota": "COPY PROVISORIA derivada 100% da Proposta Comercial LSE2026024. Nenhum fato inventado."
+    },
+    {
+      "n": 5,
+      "nome": "Front-end",
+      "status": "done",
+      "nota": "HTML+CSS+JS vanilla. revisar-frontend: veredito LIBERAR, 0 achados bloqueantes em aberto (6 corrigidos)."
+    },
+    {
+      "n": 6,
+      "nome": "Ajustes finais (imagens + responsividade)",
+      "status": "done",
+      "nota": "Todas as imagens em .webp. Aceite atingido: 0 de overflow horizontal de 320px a 1920px e 0 violacao de contraste WCAG AA, ambos medidos em navegador real."
+    },
+    {
+      "n": 7,
+      "nome": "Tags e modulos LGPD",
+      "status": "done",
+      "nota": "GTM-M2LBB4QV instalado (head + noscript) nas 3 paginas. Banner de cookies com consentimento no dataLayer, Politica de Privacidade e Fornecedores/Trabalhe Conosco. Merlin nao instalado (ID nao fornecido). Backend PHP nao se aplica: o site e estatico e nao tem formulario."
+    },
+    {
+      "n": 8,
+      "nome": "Revisao humana",
+      "status": "doing",
+      "nota": "Aguardando o olhar do usuario no preview local."
+    },
+    {
+      "n": 9,
+      "nome": "Deploy",
+      "status": "blocked",
+      "nota": "Bloqueado por dependencia do usuario: dominio e importacao do repo no Vercel."
+    }
   ],
   "pendencias": [
-    {"id": "whatsapp",   "prioridade": "alta",  "titulo": "Numero de WhatsApp real",
-     "detalhe": "A proposta comercial traz o numero truncado ('9 9973-32'). Esta como placeholder 5541999999999 em Site/assets/js/app.js (constante WA_NUMBER, ponto unico). Os 4 CTAs do site dependem dele."},
-    {"id": "dominio",    "prioridade": "alta",  "titulo": "Dominio definitivo",
-     "detalhe": "www.lseengenharia.com.br foi usado como placeholder em canonical, og:image, JSON-LD, sitemap.xml e robots.txt."},
-    {"id": "vercel",     "prioridade": "alta",  "titulo": "Importar o repo no Vercel",
-     "detalhe": "Root Directory = deploy-vercel, Framework Preset = Other/static. Nenhum build necessario."},
-    {"id": "email",      "prioridade": "media", "titulo": "E-mail comercial proprio",
-     "detalhe": "O da proposta e lucas-seckler@hotmail.com. Um endereco no dominio passa mais confianca em site B2B."},
-    {"id": "copy",       "prioridade": "media", "titulo": "Validar a copy provisoria",
-     "detalhe": "A planilha de Aprofundamento veio em branco. Toda a copy saiu da Proposta Comercial. Precisa do aval do cliente."},
-    {"id": "merlin",     "prioridade": "baixa", "titulo": "ID do Merlin",
-     "detalhe": "Popup nao instalado por falta do ID."},
-    {"id": "logo2",      "prioridade": "baixa", "titulo": "Segundo logo (LSE Consultoria & Gerenciamento de Projetos)",
-     "detalhe": "O Drive traz duas marcas. O site usa a de Engenharia Construtiva, que assina a proposta. Confirmar se a outra linha entra."},
-    {"id": "depoimentos","prioridade": "baixa", "titulo": "Depoimentos de sindicos",
-     "detalhe": "Ha contatos na proposta, mas sem autorizacao. Secao omitida em vez de fabricada."},
-    {"id": "fotos",      "prioridade": "media", "titulo": "Fotos reais x banco de imagens",
-     "detalhe": "Por decisao do cliente o site usa banco de imagens (Pexels). As 19 fotos de obra da LSE estao arquivadas em imagens/originais/. Se um dia entrarem, o portfolio pode voltar a ser por obra e a secao antes/depois pode ser retomada."}
+    {
+      "id": "whatsapp",
+      "prioridade": "alta",
+      "titulo": "Numero de WhatsApp real",
+      "detalhe": "A proposta comercial traz o numero truncado ('9 9973-32'). Esta como placeholder 5541999999999 em Site/assets/js/app.js (constante WA_NUMBER, ponto unico). Os 4 CTAs do site dependem dele."
+    },
+    {
+      "id": "dominio",
+      "prioridade": "alta",
+      "titulo": "Dominio definitivo",
+      "detalhe": "www.lseengenharia.com.br foi usado como placeholder em canonical, og:image, JSON-LD, sitemap.xml e robots.txt."
+    },
+    {
+      "id": "vercel",
+      "prioridade": "alta",
+      "titulo": "Importar o repo no Vercel",
+      "detalhe": "Root Directory = deploy-vercel, Framework Preset = Other/static. Nenhum build necessario."
+    },
+    {
+      "id": "email",
+      "prioridade": "media",
+      "titulo": "E-mail comercial proprio",
+      "detalhe": "O da proposta e lucas-seckler@hotmail.com. Um endereco no dominio passa mais confianca em site B2B."
+    },
+    {
+      "id": "copy",
+      "prioridade": "media",
+      "titulo": "Validar a copy provisoria",
+      "detalhe": "A planilha de Aprofundamento veio em branco. Toda a copy saiu da Proposta Comercial. Precisa do aval do cliente."
+    },
+    {
+      "id": "merlin",
+      "prioridade": "baixa",
+      "titulo": "ID do Merlin",
+      "detalhe": "Popup nao instalado por falta do ID."
+    },
+    {
+      "id": "logo2",
+      "prioridade": "baixa",
+      "titulo": "Segundo logo (LSE Consultoria & Gerenciamento de Projetos)",
+      "detalhe": "O Drive traz duas marcas. O site usa a de Engenharia Construtiva, que assina a proposta. Confirmar se a outra linha entra."
+    },
+    {
+      "id": "depoimentos",
+      "prioridade": "baixa",
+      "titulo": "Depoimentos de sindicos",
+      "detalhe": "Ha contatos na proposta, mas sem autorizacao. Secao omitida em vez de fabricada."
+    },
+    {
+      "id": "fotos",
+      "prioridade": "media",
+      "titulo": "Fotos reais x banco de imagens",
+      "detalhe": "Por decisao do cliente o site usa banco de imagens (Pexels). As 19 fotos de obra da LSE estao arquivadas em imagens/originais/. Se um dia entrarem, o portfolio pode voltar a ser por obra e a secao antes/depois pode ser retomada."
+    }
   ],
   "links": {
     "drive": "https://drive.google.com/drive/folders/1vzOSoinkDoyGULqTRVgn1LSyrs4Kb-WK",
     "repo": "https://github.com/dev-buildv/lse-site",
     "preview": "http://127.0.0.1:8791/",
     "dominio": null
+  },
+  "qualidade": {
+    "overflow_horizontal": "0 em 42 combinações (3 páginas × 14 larguras de 320 a 1920px)",
+    "wcag_contraste_AA": "0 violações",
+    "wcag_1.4.4_texto_200pct": "0 overflow de 320 a 1440px (breakpoints em `em`)",
+    "wcag_1.4.10_reflow": "OK em 320px e 640px",
+    "wcag_2.5.8_alvo_toque": "0 alvos abaixo de 24px",
+    "movimento": "0 entradas pendentes ou em curso ao fim do scroll (verificado 3x, desktop e mobile)",
+    "imagens": "todas as 9 mídias abrem antes do centro da tela a 400/850/1200 px/s",
+    "prefers_reduced_motion": "gate desligado, conteúdo 100% visível, sem barra de leitura"
   }
 }

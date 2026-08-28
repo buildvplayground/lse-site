@@ -39,12 +39,16 @@
   }
 
   /* ---------- 3. Menu off-canvas ----------------------------------------- */
+  // mesma condição do CSS (@media max-width:56.25em). Em `em`, para acompanhar
+  // o tamanho de fonte do navegador — senão CSS e JS discordam sobre "é mobile?"
+  // quando o usuário amplia o texto, e o painel fechado volta a ser focável.
+  var mqMobile = window.matchMedia('(max-width: 56.25em)');
   var toggle = $('.nav-toggle');
   var menu = $('.nav-menu');
   var backdrop = $('.nav-backdrop');
   function syncMenuInert() {
     if (!menu) return;
-    var closedMobile = window.innerWidth <= 900 && !document.body.classList.contains('nav-open');
+    var closedMobile = mqMobile.matches && !document.body.classList.contains('nav-open');
     menu.setAttribute('aria-hidden', String(closedMobile));
     // `inert` reforça o que o visibility:hidden já faz: nada dentro do painel
     // fechado é focável por Tab (conteúdo focável sob aria-hidden é falha WCAG).
@@ -55,6 +59,7 @@
     document.body.classList.toggle('nav-open', open);
     if (toggle) toggle.setAttribute('aria-expanded', String(open));
     syncMenuInert();
+  if (mqMobile.addEventListener) mqMobile.addEventListener('change', syncMenuInert);
     document.body.style.overflow = open ? 'hidden' : '';
     if (open && menu) { var a = menu.querySelector('a'); if (a) a.focus(); }
   }
@@ -81,63 +86,238 @@
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
   window.addEventListener('resize', function () {
-    if (window.innerWidth > 900 && document.body.classList.contains('nav-open')) setMenu(false);
+    if (!mqMobile.matches && document.body.classList.contains('nav-open')) setMenu(false);
     syncMenuInert();
   });
   syncMenuInert();
 
-  /* ---------- 4. Reveals -------------------------------------------------
-     Três camadas de gatilho (armadilha nº2 e nº3 do sistema de movimento):
-     (a) primeira tela por timer, (b) IntersectionObserver, (c) flush em saltos. */
-  var revealables = $$('[data-reveal],.rule');
-  function show(el) { el.classList.add('is-in'); }
-  if (reduce.matches || !('IntersectionObserver' in window)) {
-    revealables.forEach(show);
-  } else {
-    document.documentElement.setAttribute('data-motion', 'on');
-    // stagger automático entre irmãos diretos
-    var byParent = new Map();
-    revealables.forEach(function (el) {
-      if (!el.hasAttribute('data-reveal')) return;
-      var p = el.parentNode;
-      if (!byParent.has(p)) byParent.set(p, 0);
-      var i = byParent.get(p);
-      if (i > 0) el.style.transitionDelay = Math.min(i, 6) * 80 + 'ms';
-      byParent.set(p, i + 1);
-    });
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) { show(en.target); io.unobserve(en.target); }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' });
-    revealables.forEach(function (el) { io.observe(el); });
+  /* =====================================================================
+     4. MOTOR DE MOVIMENTO
+     Gate + 4 vocabulários (reveal, cortina, título palavra a palavra,
+     stagger de grade), contadores, parallax e barra de leitura.
 
-    // (a) primeira tela — não depende de observer (aba de fundo)
-    var firstPaint = function () {
-      revealables.forEach(function (el) {
-        if (el.getBoundingClientRect().top < window.innerHeight * 0.94) show(el);
+     Regra de ouro do projeto: **nenhuma entrada pode acontecer no fim do
+     scroll**. Um bloco que só cruzaria a linha de gatilho depois do fim
+     da página nunca animaria; e um bloco ainda animando quando o usuário
+     chega ao rodapé passa sensação de site travado. As duas coisas são
+     tratadas em `bottomGuard()`.
+     ===================================================================== */
+
+  var motionOn = !reduce.matches && 'IntersectionObserver' in window;
+
+  /* --- 4.1 preparação da marcação ------------------------------------ */
+
+  // Divide um título em palavras mascaradas. Só em texto puro: um heading
+  // com <strong>/<br>/ícone é deixado como está para não quebrar marcação.
+  function splitWords(el) {
+    if (el.dataset.split === 'done') return false;
+    var kids = Array.prototype.slice.call(el.childNodes);
+    if (!kids.length || kids.some(function (n) { return n.nodeType !== 3; })) return false;
+    var raw = el.textContent;
+    if (raw.length > 160) return false;
+    // colapsa só espaço ASCII/quebra de linha — o   das amarras precisa sobreviver
+    var words = raw.replace(/[\t\n\r ]+/g, ' ').trim().split(' ').filter(Boolean);
+    if (words.length < 2 || words.length > 22) return false;
+    var frag = document.createDocumentFragment();
+    words.forEach(function (w, i) {
+      var span = document.createElement('span');
+      span.className = 'w';
+      var it = document.createElement('span');
+      it.textContent = w;
+      it.style.setProperty('--i', i);
+      span.appendChild(it);
+      frag.appendChild(span);
+      if (i < words.length - 1) frag.appendChild(document.createTextNode(' '));
+    });
+    el.textContent = '';
+    el.appendChild(frag);
+    el.dataset.split = 'done';
+    return true;
+  }
+
+  if (motionOn) {
+    document.documentElement.setAttribute('data-motion', 'on');
+
+    // títulos que carregam o movimento da seção
+    $$('.hero h1, .section-title, .doc h1').forEach(function (h) {
+      if (splitWords(h)) {
+        var holder = h.closest('.section-head, .split-body, .hero-inner, .doc') || h;
+        if (!holder.hasAttribute('data-reveal')) holder.setAttribute('data-reveal', 'soft');
+      }
+    });
+
+    // grades e faixas entram escalonadas, com índice explícito (nada de nth-child)
+    $$('.pf-grid, .creds-grid, .incl, .ref-list, .svc-grid, .doc-cards, .contrast-list, .creds-formacao')
+      .forEach(function (g) {
+        if (g.hasAttribute('data-reveal')) g.removeAttribute('data-reveal');
+        g.setAttribute('data-stagger', '');
+        Array.prototype.forEach.call(g.children, function (ch, i) {
+          ch.style.setProperty('--i', Math.min(i, 8));
+        });
       });
-    };
+  }
+
+  /* --- 4.2 gatilhos --------------------------------------------------- */
+
+  var animated = $$('[data-reveal],[data-stagger],.rule');
+
+  function show(el) { el.classList.add('is-in'); }
+
+  // Leva o elemento ao estado final SEM animar — inclusive as palavras do
+  // título e os filhos escalonados, que têm transição própria (por isso a
+  // classe, e não style.transition: só ela alcança os descendentes).
+  function settle(el) {
+    if (el.classList.contains('is-in') && el.classList.contains('is-done')) return;
+    el.classList.add('is-instant', 'is-in');
+    void el.offsetWidth;                       // aplica o "none" antes de soltar
+    el.classList.add('is-done');
+    requestAnimationFrame(function () { el.classList.remove('is-instant'); });
+  }
+
+  if (!motionOn) {
+    animated.forEach(function (el) { el.classList.add('is-in'); });
+  } else {
+    /* Duas linhas de gatilho, porque texto e imagem têm tempos diferentes:
+
+       TEXTO  — dispara quando já entrou 12% na tela: animar um parágrafo ainda
+                colado na borda inferior faz o usuário ler algo que se mexe.
+       MÍDIA  — dispara 8% ANTES de entrar, e a cortina dura 0,7s; se ela só
+                começasse quando a figura aparece, a imagem terminaria de abrir
+                quando o usuário já tivesse passado por ela (era o caso das duas
+                figuras `.split-media`, visíveis só ~260px depois de entrarem). */
+    function reveal(en, obs) {
+      if (!en.isIntersecting) return;
+      var el = en.target;
+      obs.unobserve(el);
+      var img = el.matches('[data-reveal="mask"]') ? el.querySelector('img') : null;
+      // não abre a cortina sobre uma imagem que ainda não decodificou
+      if (img && !(img.complete && img.naturalWidth > 0)) {
+        var fired = false;
+        var go = function () { if (!fired) { fired = true; show(el); } };
+        img.addEventListener('load', go, { once: true });
+        img.addEventListener('error', go, { once: true });
+        setTimeout(go, 900);                      // rede lenta não deixa buraco
+        return;
+      }
+      show(el);
+    }
+
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { reveal(en, io); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -12% 0px' });
+
+    var ioMedia = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { reveal(en, ioMedia); });
+    }, { threshold: 0, rootMargin: '0px 0px 8% 0px' });
+
+    /* Pré-aquecimento: uma imagem `lazy` só começa a baixar quando o Chrome
+       decide, e a cortina ficava esperando o `load` — era esse o atraso real.
+       800px antes já dá tempo de decodificar sem custar nada no carregamento. */
+    if ('IntersectionObserver' in window) {
+      var ioWarm = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          var img = en.target.querySelector('img');
+          if (img && img.loading === 'lazy') img.loading = 'eager';
+          ioWarm.unobserve(en.target);
+        });
+      }, { rootMargin: '0px 0px 800px 0px' });
+      $$('[data-reveal="mask"]').forEach(function (el) { ioWarm.observe(el); });
+    }
+
+    function isMedia(el) {
+      return el.matches('[data-reveal="mask"], figure, .imgband, .pf-thumb') ||
+             !!el.querySelector('img');
+    }
+    animated.forEach(function (el) { (isMedia(el) ? ioMedia : io).observe(el); });
+
+    // (a) primeira tela entra por timer — IntersectionObserver e rAF não
+    //     rodam em aba de fundo, e o hero não pode ficar invisível por isso
+    function firstPaint() {
+      var lim = window.innerHeight * 0.92;
+      animated.forEach(function (el) {
+        if (el.getBoundingClientRect().top < lim) { show(el); io.unobserve(el); ioMedia.unobserve(el); }
+      });
+      var hero = $('.hero');
+      if (hero) hero.classList.add('is-lit');
+    }
     requestAnimationFrame(firstPaint);
     setTimeout(firstPaint, 140);
 
-    // (c) salto de scroll (âncora/hash/arrasto da barra) não gera callback
-    var flush = function () {
-      var lim = window.innerHeight * 0.3;
-      revealables.forEach(function (el) {
-        if (!el.classList.contains('is-in') && el.getBoundingClientRect().bottom < lim) {
-          el.style.transition = 'none'; show(el);
+    /* (b) GUARDA DE FIM DE SCROLL
+       Dois casos que o observer sozinho não resolve:
+       1. bloco cuja linha de gatilho fica além do scroll máximo — nunca
+          cruzaria nada; revelamos assim que ele entra de fato na tela;
+       2. usuário no fim da página — nada pode estar entrando ainda, então
+          o que sobrou aparece sem animação.                              */
+    function bottomGuard() {
+      var y = window.scrollY;
+      var vh = window.innerHeight;
+      var max = document.documentElement.scrollHeight - vh;
+      var atBottom = max - y <= 2;
+      var nearBottom = max - y < vh * 0.9;
+
+      for (var i = animated.length - 1; i >= 0; i--) {
+        var el = animated[i];
+        var settled = el.classList.contains('is-in') && el.classList.contains('is-done');
+
+        if (atBottom) {
+          // caso 2: no fim da página nada pode estar entrando — o que ainda
+          // não entrou aparece direto, e o que está no meio da transição é
+          // levado ao estado final na hora.
+          if (!settled) { settle(el); io.unobserve(el); ioMedia.unobserve(el); }
+          continue;
         }
-      });
-    };
-    window.addEventListener('scroll', flush, { passive: true });
+        if (el.classList.contains('is-in')) continue;
+
+        var r = el.getBoundingClientRect();
+        if (nearBottom && r.top < vh) {       // caso 1: já visível, anima agora
+          show(el); io.unobserve(el); ioMedia.unobserve(el); continue;
+        }
+        if (r.bottom < vh * 0.25) {           // (c) salto de scroll: já passou
+          settle(el); io.unobserve(el); ioMedia.unobserve(el);
+        }
+      }
+    }
+    /* O guard precisa ser determinístico: um scroll programático (âncora,
+       restauração de posição, salto da barra) pode chegar antes de a página
+       terminar de crescer com as imagens lazy. Por isso ele roda a cada
+       frame enquanto há rolagem, uma vez quando a rolagem para, no load, e
+       sempre que a altura do documento muda. */
+    var guardTick = false, guardStop = null;
+    function scheduleGuard() {
+      if (!guardTick) {
+        guardTick = true;
+        requestAnimationFrame(function () { guardTick = false; bottomGuard(); });
+      }
+      clearTimeout(guardStop);
+      guardStop = setTimeout(bottomGuard, 90);   // chamada de cauda
+    }
+    window.addEventListener('scroll', scheduleGuard, { passive: true });
+    window.addEventListener('resize', scheduleGuard, { passive: true });
+    window.addEventListener('load', bottomGuard);
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(scheduleGuard).observe(document.body);
+    }
+    setTimeout(bottomGuard, 200);
+
+    // libera a GPU quando a entrada termina
+    document.addEventListener('transitionend', function (e) {
+      var t = e.target;
+      // só marca como concluído o que de fato ENTROU — sem isso um
+      // transitionend qualquer marcava is-done num bloco ainda invisível e o
+      // bottomGuard passava direto por ele para sempre.
+      if (t.classList && t.classList.contains('is-in') && t.hasAttribute('data-reveal')) {
+        t.classList.add('is-done');
+      }
+    }, true);
   }
 
   /* ---------- 5. Contadores ---------------------------------------------- */
   $$('[data-count]').forEach(function (el) {
     var target = parseFloat(el.getAttribute('data-count'));
     var suffix = el.getAttribute('data-count-suffix') || '';
-    if (reduce.matches || !('IntersectionObserver' in window) || isNaN(target)) return;
+    if (!motionOn || isNaN(target)) return;
     var done = false;
     var ob = new IntersectionObserver(function (en) {
       if (!en[0].isIntersecting || done) return;
@@ -156,19 +336,27 @@
   /* ---------- 6. Passo a passo do CTA ------------------------------------ */
   var steps = $('.steps');
   if (steps) {
-    if (reduce.matches || !('IntersectionObserver' in window)) {
+    if (!motionOn) {
       steps.setAttribute('data-on', 'true');
     } else {
       var so = new IntersectionObserver(function (en) {
         if (en[0].isIntersecting) { steps.setAttribute('data-on', 'true'); so.disconnect(); }
       }, { threshold: 0.25 });
       so.observe(steps);
+      // o CTA é a última seção: se o usuário for direto ao fim, os passos
+      // não podem ficar esperando o threshold
+      window.addEventListener('scroll', function () {
+        var max = document.documentElement.scrollHeight - window.innerHeight;
+        if (max - window.scrollY < window.innerHeight * 0.9) {
+          steps.setAttribute('data-on', 'true');
+        }
+      }, { passive: true });
     }
   }
 
   /* ---------- 7. Parallax das faixas de imagem (≤0.12) ------------------- */
   var bands = $$('.imgband-media');
-  if (bands.length && !reduce.matches && window.matchMedia('(min-width: 700px)').matches) {
+  if (bands.length && motionOn && window.matchMedia('(min-width: 700px)').matches) {
     var ticking = false;
     var moveBands = function () {
       bands.forEach(function (m) {
@@ -183,6 +371,46 @@
       if (!ticking) { ticking = true; requestAnimationFrame(moveBands); }
     }, { passive: true });
     moveBands();
+  }
+
+  /* ---------- 7b. Barra de leitura + header que se esconde --------------- */
+  if (motionOn) {
+    // ⚠️ nome único: o arquivo inteiro é um IIFE e `var` é escopado à função —
+    // um `var bar` no banner de cookies reatribuía esta mesma variável, e a
+    // barra de leitura passava a escrever no banner.
+    var progressBar = document.createElement('div');
+    progressBar.className = 'progress';
+    progressBar.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(progressBar);
+
+    var lastY = window.scrollY, barTick = false;
+    function updateChrome() {
+      var y = window.scrollY;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(y / max, 1) : 0;
+      progressBar.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+      progressBar.setAttribute('data-on', y > 120 ? 'true' : 'false');
+
+      if (header && !document.body.classList.contains('nav-open')) {
+        // esconde ao descer, volta ao subir — só depois de passar o hero
+        var down = y > lastY + 4;
+        var up = y < lastY - 4;
+        if (y > 320 && down) header.setAttribute('data-hidden', 'true');
+        else if (up || y <= 320) header.setAttribute('data-hidden', 'false');
+      }
+      lastY = y;
+      barTick = false;
+    }
+    window.addEventListener('scroll', function () {
+      if (!barTick) { barTick = true; requestAnimationFrame(updateChrome); }
+    }, { passive: true });
+    updateChrome();
+
+    /* WCAG 2.4.11 — foco não pode ficar escondido: se o teclado chegar a um
+       link do header enquanto ele está recolhido, o header volta. */
+    document.addEventListener('focusin', function (e) {
+      if (header && header.contains(e.target)) header.setAttribute('data-hidden', 'false');
+    });
   }
 
   /* ---------- 8. Scroll suave com inércia (lerp) -------------------------
@@ -398,7 +626,7 @@
   /* ---------- 12. Banner de cookies (LGPD) -------------------------------
      O consentimento emite evento no dataLayer para as tags respeitarem a LGPD. */
   var KEY = 'lse_consent_v1';
-  var bar = $('#cookie-bar');
+  var cookieBar = $('#cookie-bar');
   window.dataLayer = window.dataLayer || [];
   function pushConsent(granted) {
     window.dataLayer.push({
@@ -415,20 +643,20 @@
       });
     }
   }
-  if (bar) {
+  if (cookieBar) {
     var saved = null;
     try { saved = localStorage.getItem(KEY); } catch (err) { saved = null; }
     if (saved === 'granted' || saved === 'denied') {
       pushConsent(saved === 'granted');
     } else {
-      bar.hidden = false;
+      cookieBar.hidden = false;
     }
-    $$('[data-consent]', bar).forEach(function (btn) {
+    $$('[data-consent]', cookieBar).forEach(function (btn) {
       btn.addEventListener('click', function () {
         var granted = btn.getAttribute('data-consent') === 'granted';
         try { localStorage.setItem(KEY, granted ? 'granted' : 'denied'); } catch (err) {}
         pushConsent(granted);
-        bar.hidden = true;
+        cookieBar.hidden = true;
       });
     });
   }

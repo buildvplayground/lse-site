@@ -84,3 +84,46 @@ comprovar:
 
 Ver `state.json` → `pendencias` (9 itens). As de maior impacto: **número real de WhatsApp**,
 **domínio** e **importar o repositório no Vercel**.
+
+## Revisão de qualidade — 2026-08-28
+
+Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
+
+### Corrigido
+- **Colisão de variável `bar`** — o arquivo é um único IIFE e `var` é escopado à
+  função: o `var bar` do banner de cookies reatribuía o `bar` da barra de leitura.
+  A barra nunca andava e o `scaleX()` era escrito no banner. Renomeado para
+  `progressBar` / `cookieBar`, e `chrome()` → `updateChrome()` (sombreava `window.chrome`).
+- **Imagens que apareciam depois que o scroll já tinha passado** — três causas
+  somadas: gatilho tardio (`rootMargin -12%`), cortina longa (1,2s) e imagem `lazy`
+  que só começava a baixar na hora. Agora: observador próprio para mídia (dispara 8%
+  antes de entrar), cortina de 0,7s, pré-aquecimento 800px antes e a cortina só abre
+  sobre imagem já decodificada. Verificado a 400, 850 e 1200 px/s.
+- **Espaçamento ícone/texto dos botões** — o `viewBox` da seta tinha folga interna,
+  então o vão ótico não era o `gap`. `viewBox` justo ao traço + `gap` 12px + padding
+  direito maior (a seta pesa menos que o texto) + avanço no hover de 4→3px.
+- **Entradas no fim do scroll** — `bottomGuard()` assenta o que estiver pendente ou
+  em curso ao chegar no rodapé; `settle()` usa classe (e não `style.transition`) para
+  alcançar palavras do título e filhos escalonados.
+- **Espaçamento** — 36 valores avulsos → 12, todos na grade de 4px; tokens por papel
+  (`--pad-card`, `--row-y`, `--head-gap`); a faixa "incluso" colava no título (0 vs 48px).
+- **Quebras de linha** — `text-wrap:pretty` no corpo, `&nbsp;` curtos nos títulos
+  (cadeias longas viram token inquebrável e estouram a grade em 320px).
+- **WCAG** — alvos de toque ≥24px; breakpoints convertidos de `px` para `em` (idênticos
+  a 16px, mas acompanham a fonte do navegador — é o que faz a nav virar hambúrguer a
+  1024px com texto a 200% em vez de estourar); `min-width:0` nas listas em grid
+  (grid blowout); foco no header o traz de volta quando recolhido (2.4.11).
+
+### Estado verificado
+| Critério | Resultado |
+|---|---|
+| Overflow horizontal | 0 em 42 combinações (320→1920px) |
+| Contraste AA | 0 violações |
+| Texto a 200% (1.4.4) | 0 overflow, 320→1440px |
+| Reflow (1.4.10) | OK em 320px e 640px |
+| Alvo de toque (2.5.8) | 0 abaixo de 24px |
+| Movimento no fim do scroll | 0 pendentes / 0 em curso (3 rodadas) |
+| `prefers-reduced-motion` | sem movimento, conteúdo íntegro |
+
+> Aviso conhecido e aceito: o auditor estático lista `lb-close` como "classe sem regra
+> CSS" — é modificador de `.lb-btn` usado como gancho de JS, não precisa de regra.
