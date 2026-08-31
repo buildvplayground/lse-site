@@ -140,3 +140,11 @@ Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
   contexto de empilhamento: dentro dele, `.brand` (96) ficava acima do painel (95).
   `.brand` foi para 94. O botão continua acima (é o "fechar") e agora inverte as
   cores sobre o painel navy.
+
+### WhatsApp real aplicado (2026-08-28)
+- Cliente informou **(41) 9 9973-3209**. Aplicado em `WA_NUMBER` = `5541999733209`
+  (`Site/` e `deploy-vercel/`), o ponto único de onde os 4 CTAs leem.
+- O cliente escreveu "+55 41 9973-3209" (8 dígitos). Celular brasileiro tem 9, e a
+  proposta comercial trazia `"Whatsapp: 9 9973-32"` — o `9` separado é o nono
+  dígito. Por isso o número montado é 55 + 41 + **9**9973-3209.
+- Pendência de WhatsApp encerrada no `state.json`.

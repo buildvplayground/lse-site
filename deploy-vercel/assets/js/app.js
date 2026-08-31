@@ -7,10 +7,9 @@
   'use strict';
 
   /* ---------- 0. Constantes de contato ----------------------------------
-     ⚠️ PLACEHOLDER: a proposta comercial traz o WhatsApp truncado
-     ("9 9973-32"). Trocar WA_NUMBER pelo número real (formato 55DDNNNNNNNNN)
-     — é o ÚNICO ponto do site onde o número aparece. */
-  var WA_NUMBER = '5541999999999';           // [[PLACEHOLDER — WHATSAPP REAL]]
+     WhatsApp comercial: (41) 9 9973-3209. Formato wa.me = 55 + DDD + 9 dígitos.
+     É o ÚNICO ponto do site onde o número aparece — os 4 CTAs leem daqui. */
+  var WA_NUMBER = '5541999733209';           // (41) 9 9973-3209
   var WA_BASE = 'Olá! Vim pelo site da LSE';
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');

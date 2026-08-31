@@ -2,7 +2,7 @@
   "slug": "lse",
   "cliente": "LSE - Engenharia Construtiva",
   "segmento": "Engenharia diagnostica e recuperacao predial (patologias da construcao civil)",
-  "atualizado_em": "2026-08-28",
+  "atualizado_em": "2026-08-31",
   "etapa_atual": 8,
   "hospedagem": "nao informada - preparado para Vercel (HTML estatico, Root Directory = deploy-vercel)",
   "etapas": [
@@ -67,12 +67,6 @@
     }
   ],
   "pendencias": [
-    {
-      "id": "whatsapp",
-      "prioridade": "alta",
-      "titulo": "Numero de WhatsApp real",
-      "detalhe": "A proposta comercial traz o numero truncado ('9 9973-32'). Esta como placeholder 5541999999999 em Site/assets/js/app.js (constante WA_NUMBER, ponto unico). Os 4 CTAs do site dependem dele."
-    },
     {
       "id": "dominio",
       "prioridade": "alta",
