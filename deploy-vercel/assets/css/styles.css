@@ -387,10 +387,6 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 }
 
 /* faixa de imagem simples (só respiro visual) */
-.imgstrip{position:relative;height:clamp(240px,32vw,420px);overflow:hidden;background:var(--navy-deep)}
-.imgstrip .imgband-media{inset:-9% 0;z-index:0}
-.imgstrip img{width:100%;height:100%;object-fit:cover}
-.imgstrip::after{content:"";position:absolute;inset:0;background:rgba(8,25,46,.18);z-index:1}
 
 /* ---------- 9. Serviços — bento assimétrico ---------- */
 .svc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--navy-line);

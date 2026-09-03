@@ -200,3 +200,14 @@ Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
 - Achado no caminho: o rótulo "OBRA EXECUTADA" caía na faixa translúcida do
   gradiente da legenda, sobre as nuvens claras — contraste de 1,3:1. A rampa do
   gradiente foi encurtada e o texto ganhou folga no topo; foi para 4,9-5,2:1.
+
+### Faixa de ferragens removida (2026-08-28)
+- A pedido do cliente, saiu a faixa full-width `.imgstrip` com `band-armadura.webp`
+  (malha de armadura), que ficava entre `#comparativo` e `#obras`. Era foto de banco.
+- Removidos junto: as 4 regras CSS de `.imgstrip` (ficariam mortas) e o arquivo
+  `band-armadura.webp` de `Site/` e `deploy-vercel/`.
+- **Consequência de ritmo:** `#comparativo` (bone, tabela) passa a encostar em
+  `#obras` (branco, lista editorial). Não viola a regra de adjacência — são tipos
+  de seção diferentes — mas são dois fundos claros seguidos, então o trecho ficou
+  visualmente mais plano. Se incomodar, o caminho é uma faixa de imagem com foto
+  REAL de obra no lugar, não o retorno da imagem de banco.
