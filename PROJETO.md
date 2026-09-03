@@ -183,3 +183,20 @@ Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
 - Em telas de celular baixas (≤720px) o botão secundário "Ver frentes de atuação"
   é ocultado: é só navegação, existe no menu e a seção vem logo abaixo. Empilhar
   dois botões custava 122px de altura.
+
+### Fundo do hero com a foto desfocada (2026-08-28)
+- O navy chapado atrás do texto virou a **mesma foto da obra**, desfocada e em
+  largura total, com véu em gradiente por cima. A foto nítida continua à direita.
+- **Custo perto de zero:** a fonte do fundo é `hero-bg.webp` de **160x90 px (1,3 KB)**.
+  Ampliada pelo navegador ela já vira um borrão suave — evita `blur()` sobre um
+  bitmap grande, que é caro no paint. `transform:scale(1.08)` esconde a borda
+  clareada pelo desfoque, e o `.hero-bg` tem `overflow:hidden`.
+- **Véu assimétrico:** denso à esquerda (94%), onde fica o texto, e fraco à direita
+  (34%), onde a foto respira. É o que mantém o contraste sem matar a imagem.
+- **Contraste verificado por AMOSTRAGEM DE PIXEL**, não por `getComputedStyle` —
+  com fundo de imagem o valor calculado não significa nada. Script
+  `hero_contrast.py`: esconde só o texto, tira print, e mede o PIOR pixel atrás de
+  cada bloco. Pior caso 5,36:1 (mínimo AA 4,5). 0 falhas em 6 tamanhos de tela.
+- Achado no caminho: o rótulo "OBRA EXECUTADA" caía na faixa translúcida do
+  gradiente da legenda, sobre as nuvens claras — contraste de 1,3:1. A rampa do
+  gradiente foi encurtada e o texto ganhou folga no topo; foi para 4,9-5,2:1.
