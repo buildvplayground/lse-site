@@ -148,3 +148,19 @@ Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
   proposta comercial trazia `"Whatsapp: 9 9973-32"` — o `9` separado é o nono
   dígito. Por isso o número montado é 55 + 41 + **9**9973-3209.
 - Pendência de WhatsApp encerrada no `state.json`.
+
+### Ajustes do cliente — hero e CTAs (2026-08-28)
+- **Hero virou split**: texto à esquerda (alinhado à logo) e a obra à direita, com
+  legenda. Antes era foto de fundo com overlay e o texto por cima.
+- **A foto do hero era de banco de imagens** (operário genérico em andaime). Não dá
+  para legendar uma foto de estoque com nome de obra real — seria credencial
+  fabricada. Trocada pela foto real do **Ed. Cosmopolitan** (instalação de fachada
+  técnica metálica), recortada em 4:5 de `imagens/originais/`. A legenda agora é
+  verdadeira e a `hero.webp` de estoque saiu do entregável.
+- ⚠️ **Desvio registrado**: o requisito BuildV pede hero com foto de FUNDO + overlay.
+  O cliente pediu a imagem ao lado do texto. A exigência de fundo foi trocada por
+  foto real em destaque no hero — a intenção do requisito continua atendida.
+- **CTAs ao longo da página**: havia só 2 no corpo (hero e `#contato`). Criado o
+  componente `.section-cta` (filete + frase de contexto + botão) no fim de
+  `#atuacao`, `#comparativo`, `#obras` e `#lse`. Home passou de 2 para 6 CTAs, todos
+  para o WhatsApp, com texto pré-preenchido específico da seção.

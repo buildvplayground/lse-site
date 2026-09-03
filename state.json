@@ -2,7 +2,7 @@
   "slug": "lse",
   "cliente": "LSE - Engenharia Construtiva",
   "segmento": "Engenharia diagnostica e recuperacao predial (patologias da construcao civil)",
-  "atualizado_em": "2026-08-31",
+  "atualizado_em": "2026-09-03",
   "etapa_atual": 8,
   "hospedagem": "nao informada - preparado para Vercel (HTML estatico, Root Directory = deploy-vercel)",
   "etapas": [
@@ -113,7 +113,7 @@
       "id": "fotos",
       "prioridade": "media",
       "titulo": "Fotos reais x banco de imagens",
-      "detalhe": "Por decisao do cliente o site usa banco de imagens (Pexels). As 19 fotos de obra da LSE estao arquivadas em imagens/originais/. Se um dia entrarem, o portfolio pode voltar a ser por obra e a secao antes/depois pode ser retomada."
+      "detalhe": "O HERO ja usa foto real (Ed. Cosmopolitan - fachada tecnica metalica, recortada de imagens/originais). Continuam de banco de imagens: as 6 capas de servico (Site/assets/img/svc/), as 2 faixas (band-*.webp) e as 2 figuras de split (split-*.webp). Ha 19 fotos reais em imagens/originais/ para substitui-las."
     }
   ],
   "links": {

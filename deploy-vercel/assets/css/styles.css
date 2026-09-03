@@ -208,31 +208,78 @@ body.nav-open .nav-toggle span::after{background:var(--on-dark)}
 body.nav-open .nav-toggle span::before{top:0;transform:rotate(45deg)}
 body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 
-/* ---------- 5. Hero ---------- */
+/* ---------- 5. Hero ----------
+   Split: texto à esquerda, obra real à direita com legenda.
+   ⚠️ Desvio deliberado do requisito "hero com foto de fundo + overlay": o cliente
+   pediu a imagem ao lado do texto e com legenda. A exigência real por trás do
+   requisito — foto REAL em destaque no hero — continua atendida, e agora a foto
+   é uma obra da LSE (antes era banco de imagens, que não podia ser legendado). */
 .hero{
   position:relative;isolation:isolate;
-  min-height:min(88vh,760px);
-  display:flex;align-items:flex-end;
-  padding-top:clamp(4rem,10vw,7rem);
-  padding-bottom:clamp(3rem,7vw,5.5rem);
   background:var(--navy-deep);color:var(--on-dark);
+  padding-top:clamp(2.5rem,5vw,4rem);
+  padding-bottom:clamp(2.5rem,5vw,4rem);
   overflow:hidden;
 }
-.hero-media{position:absolute;inset:0;z-index:-2}
-.hero-media img{width:100%;height:100%;object-fit:cover;object-position:50% 42%}
-.hero::after{
-  content:"";position:absolute;inset:0;z-index:-1;
+/* textura discreta para o navy chapado não ficar morto atrás do texto */
+.hero::before{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
   background:
-    linear-gradient(180deg,rgba(8,25,46,.86) 0%,rgba(8,25,46,.52) 34%,rgba(8,25,46,.90) 100%),
-    linear-gradient(100deg,rgba(8,25,46,.92) 0%,rgba(8,25,46,.34) 62%,rgba(8,25,46,.12) 100%);
+    radial-gradient(120% 90% at 8% 0%,rgba(46,86,140,.30) 0%,transparent 62%),
+    radial-gradient(90% 70% at 100% 100%,rgba(192,138,42,.13) 0%,transparent 60%);
 }
-.hero-inner{position:relative;z-index:2}
+.hero-grid{
+  display:grid;grid-template-columns:minmax(0,1.02fr) minmax(0,.82fr);
+  gap:clamp(2rem,4.5vw,4.5rem);align-items:center;
+}
+.hero-inner{position:relative;z-index:2;text-align:left}
 .hero h1{
-  font-size:var(--fs-hero);color:#fff;max-width:19ch;
+  font-size:var(--fs-hero);color:#fff;max-width:16ch;
   margin-bottom:var(--sp-5);
 }
-.hero-lede{font-size:var(--fs-lede);color:#DCE5EF;max-width:56ch;margin-bottom:var(--sp-6)}
+.hero-lede{font-size:var(--fs-lede);color:#DCE5EF;max-width:50ch;margin-bottom:var(--sp-6)}
 .hero-actions{display:flex;flex-wrap:wrap;gap:var(--sp-3)}
+
+.hero-figure{position:relative;margin:0;min-width:0}
+.hero-figure img{
+  display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;
+  border-radius:var(--r-media);
+}
+/* a legenda ancora na base da foto: identifica a obra em vez de deixá-la solta */
+.hero-figure figcaption{
+  position:absolute;left:0;right:0;bottom:0;
+  padding:var(--sp-45) var(--sp-45) var(--sp-4);
+  background:linear-gradient(180deg,rgba(8,25,46,0) 0%,rgba(8,25,46,.92) 46%,rgba(8,25,46,.97) 100%);
+  border-radius:0 0 var(--r-media) var(--r-media);
+  font-size:var(--fs-small);line-height:1.5;color:var(--on-dark-mut);
+}
+.hero-figure-tag{
+  display:block;margin-bottom:var(--sp-2);
+  font-size:var(--fs-micro);font-weight:700;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--gold-lt);
+}
+.hero-figure-obra{display:block;color:#fff;font-size:1rem;line-height:1.4}
+.hero-figure figcaption b{font-weight:600}
+.hero-figure figcaption span:not(.hero-figure-tag):not(.hero-figure-obra){
+  display:block;margin-top:.25rem;
+}
+
+/* ---------- 5b. CTA de fim de seção ----------
+   Um único componente, repetido ao longo da página: mesma promessa, mesmo lugar
+   (fim da seção), texto específico do contexto. Consistência aqui é a favor do
+   usuário — quem varia são as seções em volta, não o botão. */
+.section-cta{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;
+  gap:var(--sp-5);margin-top:var(--sp-7);
+  padding-top:var(--sp-6);border-top:1px solid var(--ink-line);
+}
+.section-cta p{
+  margin:0;max-width:48ch;min-width:0;
+  font-size:1.03rem;font-weight:500;color:var(--ink);
+}
+.section-cta .btn{flex:none}
+.bg-navy .section-cta,.bg-deep .section-cta{border-top-color:var(--navy-line)}
+.bg-navy .section-cta p,.bg-deep .section-cta p{color:var(--on-dark)}
 
 /* ---------- 6. Faixa de credenciais ---------- */
 .creds{background:var(--navy);border-top:1px solid var(--navy-line)}
@@ -711,12 +758,17 @@ a[href^="mailto:"],a[href^="tel:"]{overflow-wrap:anywhere}
   }
   html[data-motion="on"] [data-stagger].is-in>*{opacity:1;transform:none}
 
-  /* -- hero: acende no load em vez de "aparecer" ------------------- */
-  html[data-motion="on"] .hero-media img{
-    transform:scale(1.07);opacity:.55;
-    transition:transform 1.9s var(--e),opacity 1.3s var(--e);
+  /* -- hero: a foto da obra assenta no load em vez de "aparecer" ---- */
+  html[data-motion="on"] .hero-figure img{
+    transform:scale(1.05);opacity:0;
+    transition:transform 1.5s var(--e),opacity 1s var(--e);
   }
-  html[data-motion="on"] .hero.is-lit .hero-media img{transform:none;opacity:1}
+  html[data-motion="on"] .hero-figure figcaption{
+    opacity:0;transform:translateY(10px);
+    transition:opacity .9s var(--e) .35s,transform .9s var(--e) .35s;
+  }
+  html[data-motion="on"] .hero.is-lit .hero-figure img{transform:none;opacity:1}
+  html[data-motion="on"] .hero.is-lit .hero-figure figcaption{opacity:1;transform:none}
 }
 
 /* barra de leitura — some sozinha no topo da página */
@@ -751,6 +803,15 @@ a[href^="mailto:"],a[href^="tel:"]{overflow-wrap:anywhere}
   .cta-split{grid-template-columns:minmax(0,1fr)}
 }
 @media (max-width:56.25em){
+  /* hero empilha: o texto vem primeiro, a obra logo abaixo com a legenda */
+  .hero-grid{grid-template-columns:minmax(0,1fr);gap:var(--sp-6)}
+  .hero-figure img{aspect-ratio:16/10}
+  .hero h1{max-width:20ch}
+  .hero-lede{max-width:60ch}
+  /* CTA de seção empilha e o botão ocupa a largura para virar alvo fácil */
+  .section-cta{flex-direction:column;align-items:stretch;gap:var(--sp-4)}
+  .section-cta .btn{align-self:flex-start}
+
   html{scroll-padding-top:92px}
   .nav-toggle{display:flex}
   .nav-drawer{
@@ -805,9 +866,12 @@ a[href^="mailto:"],a[href^="tel:"]{overflow-wrap:anywhere}
   .svc-grid{grid-template-columns:minmax(0,1fr)}
   .svc.is-feature{grid-column:span 1}
   .pf-grid{grid-template-columns:minmax(0,1fr)}
-  .hero{min-height:auto;padding-top:3.5rem}
+  .hero{min-height:auto;padding-top:2.5rem}
   .hero h1{max-width:none}
   .hero-actions .btn{width:100%;justify-content:center}
+  .hero-figure img{aspect-ratio:4/3}
+  .hero-figure figcaption{padding:var(--sp-4) var(--sp-4) var(--sp-35)}
+  .section-cta .btn{align-self:stretch;justify-content:center}
   .topbar-creds li:nth-child(n+2){display:none}
   .topbar-inner{gap:.75rem}
   .topbar a{font-size:.7rem}
