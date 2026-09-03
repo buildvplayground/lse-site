@@ -243,6 +243,10 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .hero-figure{position:relative;margin:0;min-width:0}
 .hero-figure img{
   display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;
+  /* teto de altura: quando o 4:5 passaria da tela, o max-height vence e o
+     object-fit recorta — a foto encolhe em vez de empurrar o hero para fora.
+     `svh` é a altura real no mobile (desconta a barra do navegador). */
+  max-height:calc(100svh - var(--hero-chrome,15rem));
   border-radius:var(--r-media);
 }
 /* a legenda ancora na base da foto: identifica a obra em vez de deixá-la solta */
@@ -263,6 +267,8 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .hero-figure figcaption span:not(.hero-figure-tag):not(.hero-figure-obra){
   display:block;margin-top:.25rem;
 }
+
+
 
 /* ---------- 5b. CTA de fim de seção ----------
    Um único componente, repetido ao longo da página: mesma promessa, mesmo lugar
@@ -917,6 +923,58 @@ a[href^="mailto:"],a[href^="tel:"]{overflow-wrap:anywhere}
 }
 
 /* ---------- 21. Impressão ---------- */
+
+/* ============================================================
+   21. Proporção por ALTURA de tela
+   Precisa vir DEPOIS dos blocos por largura: mesma especificidade,
+   quem vence é a ordem no arquivo.
+   Num notebook 1366x657 o hero tinha 860px fixos e lede, botões, foto e
+   legenda caíam todos abaixo da dobra. Aqui tipografia e respiros passam a
+   ser função da altura disponível, não só da largura.
+   ============================================================ */
+@media (min-width:56.25em) and (max-height:900px){
+  .hero{
+    --hero-chrome:13rem;
+    padding-top:clamp(1.25rem,2.4vh,2.5rem);
+    padding-bottom:clamp(1.25rem,2.4vh,2.5rem);
+  }
+  .hero .eyebrow{margin-bottom:var(--sp-3)}
+  .hero h1{font-size:min(var(--fs-hero),7.4vh);max-width:19ch;margin-bottom:var(--sp-4)}
+  .hero-lede{font-size:min(var(--fs-lede),2.7vh);max-width:56ch;margin-bottom:var(--sp-5)}
+  .hero-grid{gap:clamp(1.5rem,3vw,3rem);align-items:center}
+  /* header mais enxuto libera ~24px para o conteúdo */
+  .navbar-inner{padding-block:0.75rem}
+  .brand img{height:52px}
+}
+@media (min-width:56.25em) and (max-height:720px){
+  .hero{--hero-chrome:11rem}
+  .hero h1{font-size:min(var(--fs-hero),7vh)}
+  .hero-lede{font-size:.95rem;margin-bottom:var(--sp-4)}
+}
+
+/* -- mobile baixo: o CTA principal precisa caber acima da dobra -- */
+@media (max-width:56.25em) and (max-height:720px){
+  .hero{padding-top:1.5rem;padding-bottom:1.75rem}
+  .hero .eyebrow{margin-bottom:var(--sp-3)}
+  .hero h1{font-size:min(var(--fs-hero),6.4vh);margin-bottom:var(--sp-4)}
+  .hero-lede{font-size:.95rem;margin-bottom:var(--sp-5)}
+  /* header enxuto: 135px eram 24% de uma tela de 568px */
+  .navbar-inner{padding-block:0.625rem}
+  .brand img{height:46px}
+  /* o secundário é só navegação — está no menu e a seção vem logo abaixo.
+     Empilhar dois botões custava 122px de altura; o primário fica full width. */
+  .hero-actions .btn-ghost{display:none}
+  .hero-actions .btn{width:100%;justify-content:center}
+}
+
+/* telas de celular muito baixas (SE 1a geracao e similares) */
+@media (max-width:56.25em) and (max-height:640px){
+  .hero{padding-top:1.25rem;padding-bottom:1.25rem}
+  .hero .eyebrow{font-size:.68rem;letter-spacing:.12em;margin-bottom:var(--sp-2)}
+  .hero h1{font-size:min(var(--fs-hero),5.9vh);margin-bottom:var(--sp-3)}
+  .hero-lede{font-size:.9rem;margin-bottom:var(--sp-4)}
+}
+
 @media print{
   .site-header,.nav-backdrop,.lb,.cookie-bar,.hero-actions,.cta-actions{display:none}
   body{background:#fff;color:#000}

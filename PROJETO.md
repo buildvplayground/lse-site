@@ -164,3 +164,22 @@ Rodada de auditoria por **medição** (Playwright), não por inspeção visual.
   componente `.section-cta` (filete + frase de contexto + botão) no fim de
   `#atuacao`, `#comparativo`, `#obras` e `#lse`. Home passou de 2 para 6 CTAs, todos
   para o WhatsApp, com texto pré-preenchido específico da seção.
+
+### Proporção do hero por altura de tela (2026-08-28)
+- **Problema:** o hero tinha ~860px fixos, calculados só pela LARGURA. Num notebook
+  1366x657 (tamanho comum) só o `h1` cabia: lede, botões, foto e legenda ficavam
+  todos abaixo da dobra. Em 1280x610 era pior.
+- **Correção:** nova seção 21 do CSS — a tipografia e os respiros do hero passam a
+  ser função da **altura** disponível (`min(--fs-hero, 7.4vh)`), e a foto ganhou
+  `max-height:calc(100svh - var(--hero-chrome))` com `object-fit:cover`, então ela
+  recorta em vez de empurrar o hero para fora.
+- **Ordem importa:** as regras por altura precisam vir DEPOIS das regras por
+  largura no arquivo — mesma especificidade, vence a ordem. A primeira tentativa
+  ficou no meio do CSS e era sobrescrita pelo bloco `≤35em`.
+- **Resultado medido** (lede, CTA, foto e legenda dentro da tela):
+  1024x600, 1280x610, 1366x657, 1536x730, 1440x780, 1920x955 — todos OK.
+  No mobile o CTA principal cabe de 320x568 para cima; a foto fica abaixo da
+  dobra, que é o normal em tela de celular.
+- Em telas de celular baixas (≤720px) o botão secundário "Ver frentes de atuação"
+  é ocultado: é só navegação, existe no menu e a seção vem logo abaixo. Empilhar
+  dois botões custava 122px de altura.
