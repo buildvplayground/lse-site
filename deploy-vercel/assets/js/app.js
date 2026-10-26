@@ -622,41 +622,29 @@
     });
   }
 
-  /* ---------- 12. Banner de cookies (LGPD) -------------------------------
-     O consentimento emite evento no dataLayer para as tags respeitarem a LGPD. */
-  var KEY = 'lse_consent_v1';
+  /* ---------- 12. Aviso de cookies (LGPD, informativo) --------------------
+     As tags do GTM disparam desde o carregamento; o aviso só informa as
+     finalidades e lembra que já foi visto. */
+  var NOTICE_KEY = 'cookie_notice';
   var cookieBar = $('#cookie-bar');
-  window.dataLayer = window.dataLayer || [];
-  function pushConsent(granted) {
-    window.dataLayer.push({
-      event: granted ? 'cookie_consent_granted' : 'cookie_consent_denied',
-      consent_analytics: granted ? 'granted' : 'denied',
-      consent_marketing: granted ? 'granted' : 'denied'
-    });
-    if (typeof window.gtag === 'function') {
-      window.gtag('consent', 'update', {
-        analytics_storage: granted ? 'granted' : 'denied',
-        ad_storage:        granted ? 'granted' : 'denied',
-        ad_user_data:      granted ? 'granted' : 'denied',
-        ad_personalization:granted ? 'granted' : 'denied'
-      });
-    }
-  }
   if (cookieBar) {
-    var saved = null;
-    try { saved = localStorage.getItem(KEY); } catch (err) { saved = null; }
-    if (saved === 'granted' || saved === 'denied') {
-      pushConsent(saved === 'granted');
-    } else {
-      cookieBar.hidden = false;
-    }
-    $$('[data-consent]', cookieBar).forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var granted = btn.getAttribute('data-consent') === 'granted';
-        try { localStorage.setItem(KEY, granted ? 'granted' : 'denied'); } catch (err) {}
-        pushConsent(granted);
-        cookieBar.hidden = true;
-      });
+    var cookieFins = $('[data-cookie-fins]', cookieBar);
+    var cookieMore = $('[data-cookie-more]', cookieBar);
+    var cookieOk = $('[data-cookie-ok]', cookieBar);
+    var finsOpen = function (open) {
+      if (!cookieFins || !cookieMore) return;
+      cookieFins.hidden = !open;
+      cookieMore.setAttribute('aria-expanded', open ? 'true' : 'false');
+    };
+    var seen = null;
+    try { seen = localStorage.getItem(NOTICE_KEY); } catch (err) { seen = null; }
+    if (seen !== 'ok') cookieBar.hidden = false;
+    if (cookieOk) cookieOk.addEventListener('click', function () {
+      try { localStorage.setItem(NOTICE_KEY, 'ok'); } catch (err) {}
+      cookieBar.hidden = true;
+    });
+    if (cookieMore) cookieMore.addEventListener('click', function () {
+      finsOpen(cookieFins.hidden);
     });
   }
 

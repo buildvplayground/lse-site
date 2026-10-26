@@ -690,6 +690,10 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .cookie-text a{color:var(--gold-lt);text-underline-offset:3px}
 .cookie-actions{display:flex;gap:0.625rem;flex-wrap:wrap}
 .cookie-actions .btn{min-height:44px;padding:0.75rem 1.25rem;font-size:.9rem}
+.cookie-fins{flex:1 1 100%;list-style:none;margin:0;padding:.75rem 0 0;
+  border-top:1px solid var(--navy-line);display:grid;gap:.375rem;font-size:.9rem;line-height:1.55}
+.cookie-fins[hidden]{display:none}
+.cookie-fins strong{color:var(--on-dark);font-weight:600}
 
 
 /* ---------- Alvo de toque (WCAG 2.5.8) ----------
