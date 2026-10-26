@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/css/fonts.css">
 <link rel="stylesheet" href="assets/css/tokens.css">
-<link rel="stylesheet" href="assets/css/styles.css">
+<link rel="stylesheet" href="assets/css/styles.css?v=2">
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -157,15 +157,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </footer>
 <div class="cookie-bar" id="cookie-bar" hidden role="region" aria-label="Aviso de cookies">
   <div class="container cookie-inner">
-    <p class="cookie-text">Usamos cookies para medir o desempenho do site. Você pode aceitar ou
-      recusar — recusar não limita nenhuma funcionalidade. Detalhes na
+    <p class="cookie-text">Usamos cookies para o site funcionar, medir a audiência e mostrar
+      anúncios a quem já nos visitou. Saiba mais na
       <a href="privacidade.html">Política de Privacidade</a>.</p>
     <div class="cookie-actions">
-      <button class="btn btn-primary" type="button" data-consent="granted">Aceitar</button>
-      <button class="btn btn-ghost" type="button" data-consent="denied">Recusar</button>
+      <button class="btn btn-primary" type="button" data-cookie-ok>Entendi</button>
+      <button class="btn btn-ghost" type="button" data-cookie-more aria-expanded="false" aria-controls="cookie-fins">Ver finalidades</button>
     </div>
+    <ul class="cookie-fins" id="cookie-fins" data-cookie-fins hidden>
+      <li><strong>Essenciais:</strong> fazem o site funcionar.</li>
+      <li><strong>Análise:</strong> Google Analytics e Microsoft Clarity, para saber quais páginas e botões funcionam.</li>
+      <li><strong>Publicidade:</strong> Google Ads, Meta e LinkedIn, para mostrar anúncios a quem já visitou o site.</li>
+    </ul>
   </div>
 </div>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/app.js?v=2"></script>
 </body>
 </html>
